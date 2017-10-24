@@ -12,23 +12,22 @@
 # - new1 on käidava nupu lõppasukoha reakoordinaat
 # - new2 käidava nupu lõppasukoha veerukoordinaat
 
+from random import shuffle
 
 tableSize = 8
 
 def getTurn(tokens, player):
-    ratings = []
-    # Arvutab igale võimlikule liigutusele hinnangu
+    allmoves = []
+   # juhuslik käik
     for token in tokens[player]:
         moves = getPossibleMoves(tokens, token, player)
         if len(moves) != 0:
-            for move in moves:
-                ratings.append([getRating(move), move])
+            allmoves += moves
+    shuffle(allmoves)
     # Kui mängijal on käigud otsas
-    if len(ratings) == 0:
-        return [0, 0, 0, 0]
-        #raise Exception(("Valgel " if player == 1 else "Mustal ") + "mängijal on käigud otsas.")
-    #print(max(ratings, key=lambda x: x[0]))
-    return max(ratings, key=lambda x: x[0])[1]
+    if len(allmoves) == 0:
+        return [0,0,0,0]
+    return allmoves[0]
 
 
 # Tagastab võimalikud käigud

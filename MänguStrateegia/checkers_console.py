@@ -12,32 +12,26 @@ import MänguStrateegia.checkers_ai_eatOnly
 # Muutujate algväärtustamine ========================================================================================
 # Nuppude asukohad kujul 
 # [[Mustade nuppude asukohad listidena [rida, veerg]][Valgete nuppude asukohad listidena [rida, veerg]]]
-from MänguStrateegia import checkers_ai_eatOnly as checkers_ai
 
-tokens = []
-for i in [0,6]:
-    tokenscol = []
-    for j in range(2):
-        for k in range(4):
-            tokenscol.append([i+j, 2*k-j+1])
-    tokens.append(tokenscol)
 
-boardWidth = 8 # Laua suurus
-boardRow = [i for i in range(boardWidth)]
 
-players = ["Must", "Valge"] # Mängijad
-player = 0 # Käiku tegev mängija (alustab 0 ehk must)
+
+
+# Ai mängijatele kasutatakse 1 ja 2
+from MänguStrateegia import checkers_ai as checkers_ai # AIplayer
+from MänguStrateegia import checkers_ai_eatOnly as checkers_ai2
+from MänguStrateegia import checkers_ai_random as checkers_ai3
 
 # mõlemad AI
 bothAI = True
 # Tehisintellekti vastu mängimine (True või False)
 playAI = False
-# Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad)
-AIPlayer = 1
+# Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad) number kasutab esimest AI
+AIPlayer = 0
 
 # Funktsioonid ======================================================================================================
 
-# Mängulaua joonistamine     
+# Mängulaua joonistamine
 def drawBoard():
     print("-" * 40)
     for i in range(boardWidth):
@@ -100,49 +94,66 @@ def getWinner():
     return result
 
 player = 0
-drawBoard()
-while True:
-    print("Käib", players[player])
-    # Korratakse seni, kuni kasutaja sisestab oma nupuga ruudu aadressi ja sobiva tühja sihtruudu aadressi
+#drawBoard()
+for _ in range(10):
+    tokens = []
+    for i in [0, 6]:
+        tokenscol = []
+        for j in range(2):
+            for k in range(4):
+                tokenscol.append([i + j, 2 * k - j + 1])
+        tokens.append(tokenscol)
+
+    boardWidth = 8  # Laua suurus
+    boardRow = [i for i in range(boardWidth)]
+
+    players = ["Must", "Valge"]  # Mängijad
+    player = 0  # Käiku tegev mängija (alustab 0 ehk must)
     while True:
-        if playAI and player == AIPlayer or bothAI:
-            move = checkers_ai.getTurn(tokens, player)
-            print(move)
+        #print("Käib", players[player])
+        # Korratakse seni, kuni kasutaja sisestab oma nupuga ruudu aadressi ja sobiva tühja sihtruudu aadressi
+        while True:
+            if playAI and player == AIPlayer or bothAI:
+                if player == AIPlayer:
+                    move = checkers_ai.getTurn(tokens, player)
+                else:
+                    move = checkers_ai2.getTurn(tokens, player)
+                #print(move)
+            else:
+                move = input("Järgmine käik <algne rida> <algne veerg> <sihtrida> <sihtveerg>: ")
+                move = list(map(int, move.split()))
+            #print(move)
+            if [move[0], move[1]] not in tokens[player]:
+                #print("Ruudus [", move[0], move[1],"] pole sellel mängijal nuppu!")
+                continue
+            possMoves = getPossMoves(move[0], move[1], player)
+            #print(possMoves)
+            if [move[2], move[3]] not in possMoves:
+                #print("Ruutu [", move[2], move[3],"] ei saa käia!")
+                continue
+            break
+        # Nupuasukohtade järjendist vana kustutamine ja uue lisamine
+        tokens[player].remove([move[0], move[1]])
+        tokens[player].append([move[2], move[3]])
+        # Vastase nupu löömise korral selle eemaldamine järjendist
+        if abs(move[0]-move[2]) == 2:
+            opponent = 1
+            if player == 1:
+                opponent = 0
+            tokens[opponent].remove([min(move[0], move[2])+1, min(move[1], move[3])+1])
+        #drawBoard()
+
+        if player == 0:
+            player = 1
         else:
-            move = input("Järgmine käik <algne rida> <algne veerg> <sihtrida> <sihtveerg>: ")
-            move = list(map(int, move.split()))
-        print(move)
-        if [move[0], move[1]] not in tokens[player]:
-            print("Ruudus [", move[0], move[1],"] pole sellel mängijal nuppu!")
-            continue
-        possMoves = getPossMoves(move[0], move[1], player)
-        print(possMoves)
-        if [move[2], move[3]] not in possMoves:
-            print("Ruutu [", move[2], move[3],"] ei saa käia!")
-            continue
-        break
-    # Nupuasukohtade järjendist vana kustutamine ja uue lisamine
-    tokens[player].remove([move[0], move[1]])
-    tokens[player].append([move[2], move[3]])
-    # Vastase nupu löömise korral selle eemaldamine järjendist
-    if abs(move[0]-move[2]) == 2:
-        opponent = 1
-        if player == 1:
-            opponent = 0
-        tokens[opponent].remove([min(move[0], move[2])+1, min(move[1], move[3])+1])
-    drawBoard()
-            
-    if player == 0:
-        player = 1
-    else:
-        player = 0
-    # Kas uuel mängijal on veel käiguvõimalusi
-    end = False
-    if isEnd(player):
-        # Kui järgmisel mängijal enam käiguvõimalusi pole, teatame, kes võitis või jäi mäng viiki
-        winner = getWinner()
-        if winner < 0:
-            print("Mäng lõppes viigiga.")
-        else:
-            print("Mäng on lõppenud, võitis " + players[winner] + ".")
-        break
+            player = 0
+        # Kas uuel mängijal on veel käiguvõimalusi
+        end = False
+        if isEnd(player):
+            # Kui järgmisel mängijal enam käiguvõimalusi pole, teatame, kes võitis või jäi mäng viiki
+            winner = getWinner()
+            if winner < 0:
+                print("Mäng lõppes viigiga.")
+            else:
+                print("Mäng on lõppenud, võitis " + players[winner] + ".")
+            break

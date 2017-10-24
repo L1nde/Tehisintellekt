@@ -7,12 +7,14 @@
 # Graafiline kasutajaliides
 # Fail, mida koduse töö esitamisel EI SAADETA
 
-from MänguStrateegia import checkers_ai_eatOnly as checkers_ai
 from tkinter import *
 from time import sleep
 
+
+
+
 # Muutujate algväärtustamine ========================================================================================
-# Nuppude asukohad kujul 
+# Nuppude asukohad kujul
 # [[Mustade nuppude asukohad listidena [rida, veerg]][Valgete nuppude asukohad listidena [rida, veerg]]]
 tokens = []
 for i in [0,6]:
@@ -24,21 +26,30 @@ for i in [0,6]:
 
 boardWidth = 8 # Laua suurus
 players = ["Must", "Valge"] # Mängijad
-buttons = {} # Nupud 
+buttons = {} # Nupud
 chosen = [0, 0] # Valitud nupu aadressi säilitamine
 tkTokenDown = True # Kas järgmine nupuvajutus on nupu valik käimiseks?
 player = 0 # Käiku tegev mängija (alustab 0 ehk must)
+
+
+
+
+# Ai mängijatele kasutatakse 1 ja 2
+from MänguStrateegia import checkers_ai as checkers_ai
+from MänguStrateegia import checkers_ai_eatOnly as checkers_ai3
+from MänguStrateegia import checkers_ai_random as checkers_ai2
 
 # Mõlemad AI
 bothAI = False
 # Tehisintellekti vastu mängimine (True või False)
 playAI = True
-# Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad)
-AIPlayer = 1
+# Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad) number kasutab esiemest AI
+AIPlayer = 0
 # Näita kõiki käike
-onlyResult = True
+showSteps = True
 # Aeg käikude vahel sekundides
-sleepTime = 0.25
+sleepTime = 0
+
 
 # Funktsioonid ======================================================================================================
 
@@ -77,7 +88,7 @@ def pressButton(row, col):
             buttons[str(row)+str(col)].configure(state="disabled", background=tkColor2)
             chosen = [row, col]
             tkTokenDown = False
-            if onlyResult:
+            if showSteps:
                 root.update()
     # Teise vajutusega pannakse see õigesse kohta
     else:
@@ -126,7 +137,10 @@ def pressButton(row, col):
 # [[Mustade nuppude asukohad listidena [rida, veerg]][Valgete nuppude asukohad listidena [rida, veerg]]]
 # ja muutuja player tähistab mängijat (0 - must, 1 - valge)
 def getAIMove():
-    move = checkers_ai.getTurn(tokens, player)
+    if player == AIPlayer:
+        move = checkers_ai.getTurn(tokens, player)
+    else:
+        move = checkers_ai2.getTurn(tokens, player)
     # Nupu algne asukoht
     pressButton(move[0], move[1])
     # Nupu lõppasukoht
