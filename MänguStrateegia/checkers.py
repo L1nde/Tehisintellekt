@@ -115,6 +115,10 @@ def pressButton(row, col):
             # Kui mäng pole veel lõppenud, siis teavitame, kes järgmisena käib
             if not isEnd(player):
                 tkMessage.configure(text = "Järgmise käigu teeb " + players[player].lower() + ".")
+                # Kui tehisintellekti abil mängimine on sisse lülitatud
+                if playAI and player == AIPlayer or bothAI:
+                    drawBoard()
+                    getAIMove()
             # Kui järgmisel mängijal enam käiguvõimalusi pole, teatame, kes võitis või jäi mäng viiki
             else:
                 winner = getWinner()
@@ -122,10 +126,6 @@ def pressButton(row, col):
                     tkMessage.configure(text = "Mäng on lõppenud viigiga.")
                 else:
                     tkMessage.configure(text = "Mäng on lõppenud, võitis " + players[winner] + ".")
-            # Kui tehisintellekti abil mängimine on sisse lülitatud
-            if playAI and player == AIPlayer or bothAI:
-                drawBoard()
-                getAIMove()
         # Kui tehtud käik polnud üks võimalikest, tühistame valiku ja lubame samal mängijal uuesti käia
         else:
             tkTokenDown = True
