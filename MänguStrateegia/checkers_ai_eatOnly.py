@@ -23,11 +23,6 @@ def getTurn(tokens, player):
         if len(moves) != 0:
             for move in moves:
                 ratings.append([getRating(move), move])
-    # Kui mängijal on käigud otsas
-    if len(ratings) == 0:
-        return [0, 0, 0, 0]
-        #raise Exception(("Valgel " if player == 1 else "Mustal ") + "mängijal on käigud otsas.")
-    #print(max(ratings, key=lambda x: x[0]))
     return max(ratings, key=lambda x: x[0])[1]
 
 

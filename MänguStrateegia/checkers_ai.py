@@ -25,27 +25,23 @@ def getTurn(tokens, player):
         moves = getPossibleMoves(tokens, token, player)
         if len(moves) != 0:
             for move in moves:
-                ratings.append([minimax(updateBoard(tokens, move, player), move, player, 1 if player == 0 else 0), move])
-    # Kui mängijal on käigud otsas
-    if len(ratings) == 0:
-        return [0, 0, 0, 0]
-        # raise Exception(("Valgel " if player == 1 else "Mustal ") + "mängijal on käigud otsas.")
-    #print(ratings)
+                ratings.append([getRating(tokens, player, 1 if player == 0 else 0, move, 2) + minimax(updateBoard(tokens, move, player), move, player, 1 if player == 0 else 0), move])
+    print(ratings)
     return max(ratings, key=lambda x: x[0])[1]
 
 
 def minimax(tokens, move, player, currentPlayer, depth=depth):
     ratings = [0]
     if depth == 0:
-        return getRating(move, depth)
+        return getRating(tokens, player, currentPlayer, move, depth)
     for token in tokens[currentPlayer]:
         for possMovement in getPossibleMoves(tokens, token, currentPlayer):
-            ratings.append(getRating(possMovement, depth) + minimax(updateBoard(tokens, possMovement, currentPlayer), possMovement, player, 1 if currentPlayer == 0 else 0, depth - 1))
+            ratings.append(getRating(tokens, player, currentPlayer, possMovement, depth) + minimax(updateBoard(tokens, possMovement, currentPlayer), possMovement, player, 1 if currentPlayer == 0 else 0, depth - 1))
     #print(ratings)
     if currentPlayer == player:
-        return max(ratings)
-    else:
         return -max(ratings)
+    else:
+        return min(ratings)
 
 
 # Uuendab laua seisu
@@ -99,6 +95,7 @@ def getPossibleMoves(tokens, token, player):
 
     return moves
 
-def getRating(move, depth):
+def getRating(tokens, player, currentPlayer, move, depth):
     # Sööb või ei söö
-    return (2 if abs(move[2] - move[0]) > 1 else 0) - (2-depth)
+
+    return (2 if abs(move[2] - move[0]) > 1 else 0) - 2 + depth + len(tokens[player]) - len(tokens[currentPlayer])

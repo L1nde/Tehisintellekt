@@ -24,9 +24,6 @@ def getTurn(tokens, player):
         if len(moves) != 0:
             allmoves += moves
     shuffle(allmoves)
-    # Kui mängijal on käigud otsas
-    if len(allmoves) == 0:
-        return [0,0,0,0]
     return allmoves[0]
 
 
