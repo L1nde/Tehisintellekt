@@ -101,4 +101,4 @@ def getPossibleMoves(tokens, token, player):
 
 def getRating(move, depth):
     # Sööb või ei söö
-    return (1 if abs(move[2] - move[0]) > 1 else 0) - (2-depth)
+    return (2 if abs(move[2] - move[0]) > 1 else 0) - (2-depth)

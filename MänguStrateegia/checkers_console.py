@@ -10,7 +10,7 @@
 import MänguStrateegia.checkers_ai_eatOnly
 
 # Muutujate algväärtustamine ========================================================================================
-# Nuppude asukohad kujul 
+# Nuppude asukohad kujul
 # [[Mustade nuppude asukohad listidena [rida, veerg]][Valgete nuppude asukohad listidena [rida, veerg]]]
 
 
