@@ -5,7 +5,7 @@ from math import e
 class Neuron:
 
     def __init__(self):
-        self.node = 0
+        self.activation = 0
         self.bias = random.randrange(-100, 100)/100
 
     def setBias(self, bias):
@@ -14,11 +14,11 @@ class Neuron:
     def getBias(self):
         return self.bias
 
-    def setNode(self, weight):
-        self.node = weight
+    def setActivation(self, weight):
+        self.activation = weight
 
-    def getNode(self):
-        return self.node
+    def getActivation(self):
+        return self.activation
 
 class Brain:
     def __init__(self,inputCount, outputCount, hiddenLayersCount=2, hiddenLayersNeurons=8):
@@ -69,21 +69,24 @@ class Brain:
 
     def think(self, input):
         for neuron, weight in zip(self.layers[0], input):
-            neuron.setNode(weight)
+            neuron.setActivation(weight)
         for i in range(1, len(self.layers)):
             for neuron in self.layers[i]:
                 weightSum = 0
                 for prevNeuron, weight in zip(self.layers[i-1], self.weights[i-1]):
-                    weightSum += prevNeuron.getNode() * weight
-                neuron.setNode(self.sigmoid(weightSum + neuron.getBias()))
+                   weightSum += prevNeuron.getActivation() * weight
+                neuron.setActivation(self.sigmoid(weightSum + neuron.getBias()))
 
     def backpropacation(self, output):
-        for i in range(-1, -len(self.layers), -1):
-            for neuron in self.layers[i]:
-                for prevNeuron in self.layers[i-1]:
-                    newWeight = 2*(neuron.getNode() - output
+        revLayers = reversed(self.layers)
+        for layer in reversed(self.layers):
+            for neuron in layer:
 
 
+
+
+    def sigmoidDerivative(self, x):
+        return e**x/(e**x + 1)**2
 
     def sigmoid(self, x):
         return 1/(1+e**(-x))
