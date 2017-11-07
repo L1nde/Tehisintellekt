@@ -19,8 +19,8 @@ import MänguStrateegia.checkers_ai_eatOnly
 
 # Ai mängijatele kasutatakse 1 ja 2
 from MänguStrateegia import checkers_ai as checkers_ai # AIplayer
-from MänguStrateegia import checkers_ai_eatOnly as checkers_ai2
-from MänguStrateegia import checkers_ai_random as checkers_ai3
+from MänguStrateegia import Meelis_AI as checkers_ai2
+from MänguStrateegia import checkers_ai_random as checkers_ai22
 
 # mõlemad AI
 bothAI = True
@@ -28,6 +28,7 @@ bothAI = True
 playAI = False
 # Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad) number kasutab esimest AI
 AIPlayer = 0
+times = 10
 
 # Funktsioonid ======================================================================================================
 
@@ -95,7 +96,7 @@ def getWinner():
 
 player = 0
 #drawBoard()
-for _ in range(10):
+for _ in range(times):
     tokens = []
     for i in [0, 6]:
         tokenscol = []

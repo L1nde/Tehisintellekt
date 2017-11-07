@@ -35,12 +35,13 @@ player = 0 # Käiku tegev mängija (alustab 0 ehk must)
 
 
 # Ai mängijatele kasutatakse 1 ja 2
-from MänguStrateegia import checkers_ai as checkers_ai
-from MänguStrateegia import checkers_ai_eatOnly as checkers_ai3
-from MänguStrateegia import checkers_ai_random as checkers_ai2
+from MänguStrateegia import checkers_ai as checkers_ai # AI player
+from MänguStrateegia import checkers_ai_eatOnly as checkers_ai22
+from MänguStrateegia import checkers_ai_random as checkers_ai21
+from MänguStrateegia import Meelis_AI as checkers_ai2
 
 # Mõlemad AI
-bothAI = False
+bothAI = True
 # Tehisintellekti vastu mängimine (True või False)
 playAI = True
 # Kas AI mängib mustade (0) või valgete (1) nuppudega (alati alustavad mustad) number kasutab esiemest AI

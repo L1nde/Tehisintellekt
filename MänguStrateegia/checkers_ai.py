@@ -14,33 +14,35 @@
 
 from copy import deepcopy
 
-tableSize = 8
-depth = 2
-started = depth
+
+
 
 def getTurn(tokens, player):
     ratings = []
+    depth = 2
     # Arvutab igale võimlikule liigutusele hinnangu
     for token in tokens[player]:
         moves = getPossibleMoves(tokens, token, player)
         if len(moves) != 0:
             for move in moves:
-                ratings.append([getRating(tokens, player, 1 if player == 0 else 0, move, 2) + minimax(updateBoard(tokens, move, player), move, player, 1 if player == 0 else 0), move])
-    print(ratings)
+                ratings.append([getRating(player, player, move, 2) + minimax(updateBoard(tokens, move, player), player, 1 - player, depth), move])
+    # print(ratings)
     return max(ratings, key=lambda x: x[0])[1]
 
 
-def minimax(tokens, move, player, currentPlayer, depth=depth):
+def minimax(tokens, player, currentPlayer, depth):
     ratings = [0]
     if depth == 0:
-        return getRating(tokens, player, currentPlayer, move, depth)
+        return 0
     for token in tokens[currentPlayer]:
         for possMovement in getPossibleMoves(tokens, token, currentPlayer):
-            ratings.append(getRating(tokens, player, currentPlayer, possMovement, depth) + minimax(updateBoard(tokens, possMovement, currentPlayer), possMovement, player, 1 if currentPlayer == 0 else 0, depth - 1))
-    #print(ratings)
+            temp = getRating(player, currentPlayer, possMovement, depth) + minimax(updateBoard(tokens, possMovement, currentPlayer), player, 1 - currentPlayer, depth - 1)
+            ratings.append(temp)
     if currentPlayer == player:
-        return -max(ratings)
+        # Mängija kõige praeem käik
+        return max(ratings)
     else:
+        # vastase kõige parem käik ehk käik mis teeb mängijale kõige rohkem kahju
         return min(ratings)
 
 
@@ -50,18 +52,19 @@ def updateBoard(tokens, move, player):
     copy[player].remove(move[:2])
     copy[player].append(move[2:])
     if abs(move[2] - move[0]) > 1:
-        copy[1 if player == 0 else 0].remove([move[0] + (move[2] - move[0])/2, move[1] + (move[3] - move[1])/2])
+        copy[1 - player].remove([move[0] + (move[2] - move[0])/2, move[1] + (move[3] - move[1])/2])
     return copy
 
 # Tagastab võimalikud käigud
 def getPossibleMoves(tokens, token, player):
     moves = []
+    tableSize = 8
 
     # Liikumissuund vastavalt mängijale
     direction = -1 if player == 1 else 1
 
     # Vastane
-    opponent = 1 if player == 0 else 0
+    opponent = 1 - player
 
     # Liikumine paremale võmalik
     if 0 <= (token[0] + direction) < tableSize and 0 <= token[1] + 1 < tableSize:
@@ -95,7 +98,12 @@ def getPossibleMoves(tokens, token, player):
 
     return moves
 
-def getRating(tokens, player, currentPlayer, move, depth):
-    # Sööb või ei söö
-
-    return (2 if abs(move[2] - move[0]) > 1 else 0) - 2 + depth + len(tokens[player]) - len(tokens[currentPlayer])
+def getRating(player, currentPlayer, move, depth):
+    # Sööb või ei söö ja millisel sügavusel
+    rating = 0
+    if abs(move[2] - move[0]) > 1:
+        rating = 2 + depth
+    # kui vastase käik on
+    if player != currentPlayer:
+        rating = -rating
+    return rating
