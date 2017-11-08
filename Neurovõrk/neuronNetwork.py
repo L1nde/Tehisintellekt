@@ -64,8 +64,9 @@ class Brain:
             layerWeights.append(random.randrange(-100, 100)/100)
         self.weights.append(layerWeights)
 
-    def train(self, input, output):
+    def train(self, input, target):
         self.think(input)
+        self.backpropacation(target)
 
     def think(self, input):
         for neuron, weight in zip(self.layers[0], input):
@@ -77,16 +78,36 @@ class Brain:
                    weightSum += prevNeuron.getActivation() * weight
                 neuron.setActivation(self.sigmoid(weightSum + neuron.getBias()))
 
-    def backpropacation(self, output):
-        revLayers = reversed(self.layers)
-        for layer in reversed(self.layers):
-            for neuron in layer:
+    def backpropacation(self, target):
+        newWeights = []
+        newWeights.append([])
+        for _ in range(self.hiddenLayersCount):
+            newWeights.append([])
+        counter = 0
+        for i in reversed(range(len(self.layers))):
+            curLayer = self.layers[i]
+            prevLayer = self.layers[i-1]
+            for neuron in curLayer:
+                for prevNeuron in prevLayer:
+                    change = prevNeuron.getActivation()*self.totalErrorDerivative(target[i], i)*self.sigmoidDerivative(neuron.getActivation())
+                    newWeights[i].append(self.weights[i][counter] - change)
+            counter += 1
+        return newWeights
 
 
 
+    def totalError(self, target):
+        sum = 0
+        for i in range(len(self.layers[-1])):
+            sum += (target[i] - self.layers[-1][i])**2 # Can be divided by 2
+        return sum
+
+    def totalErrorDerivative(self, target, index):
+        return self.layers[-1][index].getActivation() - target
 
     def sigmoidDerivative(self, x):
-        return e**x/(e**x + 1)**2
+        # return e**x/(e**x + 1)**2
+        return x*(1-x)
 
     def sigmoid(self, x):
         return 1/(1+e**(-x))
