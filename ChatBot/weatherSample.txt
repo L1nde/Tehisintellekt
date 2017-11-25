@@ -1,0 +1,13 @@
+{"coord":{"lon":26.73,"lat":58.38},
+"weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10d"}],
+"base":"stations",
+"main":{"temp":5,"pressure":1005,"humidity":93,"temp_min":5,"temp_max":5},
+"visibility":10000,
+"wind":{"speed":6.7,"deg":210},
+"rain":{"3h":0.335},
+"clouds":{"all":92},
+"dt":1510303800,
+"sys":{"type":1,"id":5015,"message":0.004,"country":"EE","sunrise":1510293056,"sunset":1510322539},
+"id":588335,
+"name":"Tartu",
+"cod":200}
